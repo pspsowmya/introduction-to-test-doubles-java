@@ -60,7 +60,6 @@ public class BubbleTeaOrderServiceTest {
     }
 
 
-
     @ParameterizedTest
     @EnumSource(BubbleTeaTypeEnum.class)
     public void shouldCreateBubbleTeaOrderRequestWhenCreateOrderRequestIsCalledByParameterization(BubbleTeaTypeEnum teaTypeEnum) {
