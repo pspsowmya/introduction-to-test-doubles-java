@@ -4,6 +4,11 @@ import com.techreturners.bubbleteaordersystem.service.BubbleTeaOrderService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.runners.Parameterized;
 import testhelper.DummySimpleLogger;
 
 import static org.junit.Assert.*;
@@ -53,5 +58,37 @@ public class BubbleTeaOrderServiceTest {
         verify(mockMessenger).sendBubbleTeaOrderRequestEmail(result);
         verify(mockMessenger, times(1)).sendBubbleTeaOrderRequestEmail(result);
     }
+
+
+
+    @ParameterizedTest
+    @EnumSource(BubbleTeaTypeEnum.class)
+    public void shouldCreateBubbleTeaOrderRequestWhenCreateOrderRequestIsCalledByParameterization(BubbleTeaTypeEnum teaTypeEnum) {
+
+        //Arrange
+        BubbleTea bubbleTea = new BubbleTea(teaTypeEnum, 4.5);
+        BubbleTeaRequest bubbleTeaRequest = new BubbleTeaRequest(paymentDetails, bubbleTea);
+
+        BubbleTeaOrderRequest expectedResult = new BubbleTeaOrderRequest(
+                "hello kitty",
+                "sanrio puroland",
+                "0123456789",
+                teaTypeEnum
+        );
+
+        //Act
+        BubbleTeaOrderRequest result = bubbleTeaOrderService.createOrderRequest(bubbleTeaRequest);
+
+        //Assert
+        assertEquals(expectedResult.getName(), result.getName());
+        assertEquals(expectedResult.getAddress(), result.getAddress());
+        assertEquals(expectedResult.getDebitCardDigits(), result.getDebitCardDigits());
+        assertEquals(expectedResult.getBubbleTeaType(), result.getBubbleTeaType());
+
+        //Verify Mock was called with the BubbleTeaOrderRequest result object
+        verify(mockMessenger).sendBubbleTeaOrderRequestEmail(result);
+        verify(mockMessenger, times(1)).sendBubbleTeaOrderRequestEmail(result);
+    }
+
 
 }
